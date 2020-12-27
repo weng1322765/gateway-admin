@@ -1,0 +1,1 @@
+alter table flow_limit add max_queue_time int(8) DEFAULT 5000 COMMENT '队列最大等待时间（ms）' AFTER flow_control_method;

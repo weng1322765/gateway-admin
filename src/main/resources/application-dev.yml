@@ -1,0 +1,61 @@
+server:
+  port: 9203
+eureka:
+  instance:
+    # 该配置指示eureka客户端需要向eureka服务器发送心跳的频率  (Spring Cloud默认该配置是 30s)
+    leaseRenewalIntervalInSeconds: 10
+    # 该配置指示eureka服务器在接收到最后一个心跳之后等待的时间，然后才能从列表中删除此实例 (Spring Cloud默认该配置是 90s)
+    lease-expiration-duration-in-seconds: 30
+    # actuator
+    health-check-url-path: /actuator/health
+  client:
+    registryFetchIntervalSeconds: 5
+    # 注意点：eureka.client.healthcheck.enabled=true配置项必须设置在application.yml中
+    # eureka.client.healthcheck.enabled=true 只应该在application.yml中设置。如果设置在bootstrap.yml中将会导致一些不良的副作用，例如在Eureka中注册的应用名称是UNKNOWN等。
+    healthcheck:
+      enabled: true
+    service-url:
+      # 这里配置一个defaultZone 用来替换默认的配置 http://localhost:8761/eureka
+      defaultZone: http://anytxnv2:9101/eureka
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
+  #配置检查项
+  health:
+    mail:
+      enabled: false
+
+spring:
+  application:
+    name: gateway-admin
+  cloud:
+    refresh:
+      refreshable: none
+  mail:
+    host: smtp.163.com
+    username: gaochenbo2008@163.com
+    password: aaaaaa
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    serialization:
+      write-dates-as-timestamps: false
+
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://10.0.11.25:3306/anytxnv2_server_admin_dev?characterEncoding=utf8
+    username: anycfs
+    password: anycfs123
+
+  boot:
+    admin:
+      notify:
+        mail:
+          enabled: false

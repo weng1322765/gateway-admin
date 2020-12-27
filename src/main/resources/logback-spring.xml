@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+说明：
+    1. 文件的命名和加载顺序有关
+       logback.xml早于application.yml加载，logback-spring.xml晚于application.yml加载
+       如果logback配置需要使用application.yml中的属性，需要命名为logback-spring.xml
+    2. logback使用application.yml中的属性
+       使用springProperty才可使用application.yml中的值 可以设置默认值
+    3. if标签依赖 org.codehaus.janino 包
+    4. 日志中输出行号，可能会带来性能问题
+
+-->
+<configuration scan="true" scanPeriod="60 seconds">
+
+    <!-- service env -->
+    <springProperty scope="context" name="env" source="spring.profiles.active" defaultValue="dev"/>
+    <!-- log base path -->
+    <springProperty scope="context" name="logPath" source="log.path" defaultValue="logs"/>
+    <!-- log name -->
+    <property name="logHome" value="${logPath}"/>
+    <!-- back log base path -->
+    <property name="logBackHome" value="${logPath}/backup"/>
+
+    <!-- 日志文件的命名：应用_类型_功能 推荐分类有stats/desc/monitor/visit等,方便查找日志-->
+    <property name="logNameConsole" value="gateway_admin_console"/>
+    <!-- 文件切割大小 -->
+    <property name="maxFileSize" value="100MB" />
+    <!-- 文档保留天数 -->
+    <property name="maxHistory" value="60" />
+    <!-- 文档保留总大小 -->
+    <property name="totalSizeCap" value="5GB" />
+
+
+    <!-- 系统服务日志 -->
+    <appender name="console"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logHome}/${logNameConsole}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${logBackHome}/%d{yyyy-MM-dd}/${logNameConsole}.%d{HH}.%i.log.gz</fileNamePattern>
+            <!-- 单个日志文件最多 100MB, 60天的日志周期，最大不能超过10GB -->
+            <maxFileSize>${maxFileSize}</maxFileSize>
+            <maxHistory>${maxHistory}</maxHistory>
+            <totalSizeCap>${totalSizeCap}</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyyMMdd HH:mm:ss.SSS} %X{LOG_ID} [%thread] %-5level %logger{100}.%method\(\):%L - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- On Windows machines setting withJansi to true enables ANSI
+         color code interpretation by the Jansi library. This requires
+         org.fusesource.jansi:jansi:1.8 on the class path.  Note that
+         Unix-based operating systems such as Linux and Mac OS X
+         support ANSI color codes by default.
+          recognizes "%black", "%red", "%green","%yellow","%blue",
+          "%magenta","%cyan", "%white", "%gray", "%boldRed","%boldGreen",
+          "%boldYellow", "%boldBlue", "%boldMagenta""%boldCyan",
+          "%boldWhite" and "%highlight"
+          -->
+        <!--withJansi>true</withJansi-->
+        <encoder>
+            <!--%d{yyyy-MM-dd HH:mm:ss.SSS} -%5p ${PID:-} [%15.15t] %-40.40logger{39} : %m%n-->
+            <pattern>%boldCyan(%d{yyyy-MM-dd HH:mm:ss.SSS}) - %boldRed(%5p) %blue([%10.10t]) %magenta(%-100.100logger{200}) %yellow(%2M) %green(%2L) : %msg%n</pattern>
+            <!--<pattern>%d{yyyyMMddHHmmss} [%thread] [%c %2M %2L] %-3p - %m%n</pattern>-->
+        </encoder>
+    </appender>
+
+    <!-- 如果是生产环境不向控制台输出日志数据 isDefined() isNull() p() or property() equals() contains -->
+    <if condition='p("env").equals("prod")'>
+        <then>
+            <root level="info">
+                <appender-ref ref="console"/>
+            </root>
+        </then>
+        <else>
+            <root level="info">
+                <appender-ref ref="stdout"/>
+                <appender-ref ref="console"/>
+            </root>
+        </else>
+    </if>
+
+
+
+
+    <logger name="jrx.anydmp.gateway.admin" level="debug"  /> <!-- additivity="false" 不在向上级输出日志 -->
+
+
+</configuration>

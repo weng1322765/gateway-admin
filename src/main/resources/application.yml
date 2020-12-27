@@ -1,0 +1,93 @@
+server:
+  port: 9203
+eureka:
+  instance:
+    # 该配置指示eureka客户端需要向eureka服务器发送心跳的频率  (Spring Cloud默认该配置是 30s)
+    leaseRenewalIntervalInSeconds: 10
+    # 该配置指示eureka服务器在接收到最后一个心跳之后等待的时间，然后才能从列表中删除此实例 (Spring Cloud默认该配置是 90s)
+    lease-expiration-duration-in-seconds: 30
+    # actuator
+    health-check-url-path: /actuator/health
+    prefer-ip-address: true
+
+  client:
+    registryFetchIntervalSeconds: 5
+    # 注意点：eureka.client.healthcheck.enabled=true配置项必须设置在application.yml中
+    # eureka.client.healthcheck.enabled=true 只应该在application.yml中设置。如果设置在bootstrap.yml中将会导致一些不良的副作用，例如在Eureka中注册的应用名称是UNKNOWN等。
+    healthcheck:
+      enabled: true
+    service-url:
+      # 这里配置一个defaultZone 用来替换默认的配置 http://localhost:8761/eureka
+      defaultZone: http://anytxnv2:9101/eureka
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
+
+
+spring:
+  application:
+    name: gateway-admin
+  profiles:
+    active: default
+  cloud:
+    refresh:
+      refreshable: none
+#  jpa:
+#      database: mysql
+#      generate-ddl: true
+#      properties:
+#       hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
+#      hibernate:
+#        naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+#        ddl-auto: update
+#  #    show-sql: true
+
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    serialization:
+      write-dates-as-timestamps: false
+
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://10.0.11.25:3306/anytxnv2_gateway_admin?characterEncoding=utf8
+    username: anycfs
+    password: anycfs123
+
+
+
+
+filter:
+  setting:
+    #是否开启鉴权 0不开启   -1开启
+    authModel: -1
+    #综管地址前缀
+    authAddress: http://127.0.0.1:9600
+    #登陆错误重定向地址
+    loginErrorUrl: http://${filter.setting.localUrl}/any/page/error.html
+    #没有权限重定向地址
+    noAuthUrl: http://${filter.setting.localUrl}/any/page/error2.html
+    #鉴权错误重定向地址
+    authErrorUrl: http://${filter.setting.localUrl}/any/page/error.html
+    #服务首页地址（登陆成功后回调）
+    indexUrl: http://127.0.0.1:9203/
+#    #服务前缀
+#    servicePre: ${server.context-path}
+    #服务key(综管获取)
+    serviceId: vxrXZAfYsnCNXstYnJ
+    #本地ip:port（真实ip,综管中心要重定向回来）
+    localUrl: 127.0.0.1:9203
+    #是否集成综管jar包
+    hadAuth: true
+    #忽略鉴权地址
+    allows:
+      - /login
+      - /actuator/**

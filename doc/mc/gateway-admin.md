@@ -1,0 +1,62 @@
+
+
+## 网关管理功能目录结构
+
+- Monitor|监控面板|/application/monitor|get
+    - MonitorPanel|监控面板|/application/monitor/home|get
+- App|服务管理|/application/service|get
+    - AppInfo|服务网关|/application/service/server|get
+        - @appInfoPage|网关列表|/serverInfo/page|get
+        - @appInfoList|网关下拉列表|/serverInfo/list|get
+        - @createApp|新建网关|/serverInfo|post
+        - @updateApp|编辑网关|/serverInfo|put
+        - @deleteApp|删除网关|/serverInfo/serverId/*|put
+        - @updateAppStatus|更新网关状态|/serverInfo/serverId/*/status/*|put
+        - AppInfoDetail|查看详情|/application/service/server/detail/*|get
+            - @getBaseInfo|基本信息|/serverInfo/serverId/*|get
+            - @getInstancePage|实列列表|/instanceInfo/serverId/*|get
+            - @getRouteInfo|实例下路由列表|/routeInfo/list|get
+                - @getFlowStatisticsInfo|查看流量曲线图|/monitor/list|get
+            - @getLimitInfo|实例下限流列表|/flowLimit/list|get
+            - @getDegradeInfo|实例下降级列表|/degrade/list|get         
+- Gateway|网关管理|/application/gateway|get
+    - RouteInfo|路由管理|/application/gateway/route|get
+        - @routeInfoPage|路由管理分页列表|/routeInfo/page|get
+        - @appInfoList|网关下拉列表|/serverInfo/names|get
+        - @createRoute|新建路由|/routeInfo|post
+        - @deleteRoute|删除路由|/routeInfo/id/*|put
+        - @updateRoute|修改路由|/routeInfo|put
+        - @updateRouteStatus|更新路由状态|/routeInfo/id/*/status/*|put
+        - @routeById|路由详情|/routeInfo/id/*|get
+    - LimitInfo|限流控制|/application/gateway/limit|get
+        - @limitInfoPage|限流控制分页列表|/flowLimit/page|get
+        - @appInfoList|网关下拉列表|/serverInfo/names|get
+        - @routeInfoList|路由下拉列表|/routeInfo/names/serverId/*|get
+        - @createLimit|新建限流控制|/flowLimit|post
+        - @deleteLimit|删除限流控制|/flowLimit/id/*|put
+        - @updateLimit|修改限流控制|/flowLimit/update|put
+        - @updateLimitStatus|更新限流状态|/flowLimit/id/*/status/*|put
+        - @limitUserById|限流控制详情|/flowLimit/id/*|get
+    - DegradeInfo|降级控制|/application/gateway/degrade|get
+        - @degradeInfoPage|降级控制分页列表|/degrade/page|get
+        - @appInfoList|网关下拉列表|/serverInfo/names|get
+        - @routeInfoList|路由下拉列表|/routeInfo/names/serverId/*|get
+        - @createDegrade|新建降级控制|/degrade|post
+        - @deleteDegrade|删除降级控制|/degrade/id/*|put
+        - @updateDegrade|修改降级控制|/degrade/update|put
+        - @updateDegradeStatus|更新降级状态|/degrade/id/*/status/*|put
+        - @degradeById|降级控制详情|/degrade/id|get
+    - UserInfo|名单管理|/application/gateway/user|get
+        - @userInfoPage|名单管理分页列表|/recordInfo/page|get
+        - @userById|名单详情|/recordInfo/id/*|get
+- Warning|限流告警|/application/warning|get
+    - WarningInfo|限流告警|/application/warning/info|get
+        - @warningInfoPage|限流告警分页列表|warningEvent/page|get
+        - @warningById|限流告警详情|/warningEvent/id/*|get
+- Operation|操作记录|/application/operation|get
+    - OperationInfo|操作记录|/application/operation/record|get
+        - @operationInfoPage|操作记录分页列表|/recordInfo/page|get
+        - @operationById|操作记录详情|/recordInfo/id/*|get
+    
+## 网关管理功能目录结构
+
